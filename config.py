@@ -13,8 +13,6 @@ class Settings(BaseSettings):
     db_password: str
     db_name: str
 
-    token: str
-
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"
