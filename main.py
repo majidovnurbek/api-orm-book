@@ -4,21 +4,27 @@ from config import get_settings
 from schemas.user import BaseUser, UserOut
 from schemas.base import BaseResponse
 from models.user import User
+from contextlib import asynccontextmanager
 
 settings = get_settings()
+
+
+# Lifespan orqali startup event
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await init_db()
+    print("DB Connected ✅")
+    yield
+    # Optional: shutdown uchun joy qoldirish mumkin
+
 
 app = FastAPI(
     title=settings.app_name,
     version=settings.app_version,
     description="FastAPI CRUD Tortoise ORM with Aerich",
     debug=settings.app_debug,
+    lifespan=lifespan,
 )
-
-
-@app.on_event("startup")
-async def startup():
-    await init_db()
-    print("DB Connected ✅")
 
 
 @app.get("/apps")
@@ -40,7 +46,6 @@ async def create_user(user: BaseUser):
         email=user.email,
         username=user.username,
     )
-
     return BaseResponse(status=True, data=UserOut.model_validate(user_data))
 
 

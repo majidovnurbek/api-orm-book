@@ -11,6 +11,11 @@ class UpdateUser(BaseModel):
     email: Optional[str] = None
     username: Optional[str] = None
 
-class UserOut(BaseUser):
-    id: int
+
+
+class UserOut(BaseModel):
+    name: str
+
     model_config = ConfigDict(from_attributes=True)
+
+
